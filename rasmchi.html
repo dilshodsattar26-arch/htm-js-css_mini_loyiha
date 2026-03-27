@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 AI Rasm Generator - Haqiqiy Natija!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c1e 0%, #1a1a3e 50%, #0c0c1e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, #00f5ff, #00ff88, #ff00ff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 3s ease infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .header p {
+            color: #8892b0;
+            font-size: 1.2rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+
+        /* MAIN CARD */
+        .main-card {
+            background: rgba(30, 40, 80, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        /* INPUT SECTION */
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-section label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #00f5ff;
+            margin-bottom: 12px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        #promptInput {
+            width: 100%;
+            padding: 20px 25px;
+            font-size: 1.2rem;
+            border: 2px solid rgba(0, 245, 255, 0.3);
+            border-radius: 15px;
+            background: rgba(15, 25, 50, 0.9);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        #promptInput:focus {
+            outline: none;
+            border-color: #00f5ff;
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.3);
+        }
+
+        #promptInput::placeholder {
+            color: #5a6a8a;
+        }
+
+        /* BUTTONS */
+        .generate-btn {
+            width: 100%;
+            padding: 22px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(90deg, #00f5ff, #00ff88);
+            color: #0c0c1e;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 245, 255, 0.5);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* QUICK EXAMPLES */
+        .quick-examples {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .quick-examples span {
+            color: #8892b0;
+            font-size: 0.95rem;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .example-btn {
+            padding: 10px 20px;
+            background: rgba(0, 245, 255, 0.1);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 25px;
+            color: #00f5ff;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .example-btn:hover {
+            background: #00f5ff;
+            color: #0c0c1e;
+            transform: scale(1.05);
+        }
+
+        /* RESULT AREA */
+        .result-area {
+            margin-top: 35px;
+            background: rgba(15, 25, 50, 0.8);
+            border-radius: 20px;
+            min-height: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .placeholder {
+            text-align: center;
+            padding: 50px;
+            color: #5a6a8a;
+        }
+
+        .placeholder-icon {
+            font-size: 6rem;
+            margin-bottom: 25px;
+            opacity: 0.5;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .placeholder h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #8892b0;
+        }
+
+        .placeholder p {
+            color: #5a6a8a;
+        }
+
+        /* LOADING */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 5px solid rgba(0, 245, 255, 0.2);
+            border-top-color: #00f5ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            color: #00f5ff;
+            margin-bottom: 10px;
+        }
+
+        .loading-subtext {
+            color: #8892b0;
+            font-size: 0.95rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 20px auto 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00f5ff, #00ff88);
+            border-radius: 10px;
+            animation: progress 2s ease-in-out infinite;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        /* RESULT IMAGE */
+        .result-container {
+            display: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        .result-image {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .result-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 14px 28px;
+            background: linear-gradient(90deg, #00f5ff, #00ff88);
+            border: none;
+            border-radius: 12px;
+            color: #0c0c1e;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 245, 255, 0.4);
+        }
+
+        /* HISTORY */
+        .history-section {
+            margin-top: 35px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .history-header h3 {
+            color: #00f5ff;
+            font-size: 1.3rem;
+        }
+
+        .clear-btn {
+            padding: 8px 16px;
+            background: rgba(255, 0, 100, 0.2);
+            border: 1px solid rgba(255, 0, 100, 0.5);
+            border-radius: 8px;
+            color: #ff0064;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .clear-btn:hover {
+            background: #ff0064;
+            color: white;
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .history-item {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .history-item:hover {
+            border-color: #00f5ff;
+            transform: scale(1.05);
+        }
+
+        .history-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .history-item .prompt-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 8px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+            font-size: 0.75rem;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: #5a6a8a;
+        }
+
+        /* TOAST */
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: rgba(30, 40, 80, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 18px 28px;
+            border-radius: 12px;
+            margin-top: 12px;
+            border-left: 5px solid #00ff88;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 320px;
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success { border-left-color: #00ff88; }
+        .toast.error { border-left-color: #ff0064; }
+        .toast.warning { border-left-color: #ffaa00; }
+
+        .toast-icon {
+            font-size: 1.5rem;
+        }
+
+        .toast-message {
+            flex: 1;
+            font-size: 1rem;
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 25px;
+            color: #5a6a8a;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #00f5ff;
+            text-decoration: none;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-card {
+                padding: 25px;
+            }
+            
+            #promptInput {
+                font-size: 1rem;
+                padding: 15px 20px;
+            }
+            
+            .generate-btn {
+                font-size: 1.1rem;
+                padding: 18px;
+            }
+            
+            .result-area {
+                min-height: 350px;
+            }
+            
+            .toast {
+                min-width: auto;
+                max-width: 90vw;
+            }
+            
+            .toast-container {
+                left: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎨 AI Rasm Generator</h1>
+            <p>Nima chizishni xohlasangiz, shuni yozing - AI rasm yaratadi!</p>
+            <div class="status-badge">✅ BEPUL | ✅ API KEY KERAK EMAS | ✅ CHEKLOVSIZ</div>
+        </div>
+
+        <!-- Main Card -->
+        <div class="main-card">
+            <!-- Input Section -->
+            <div class="input-section">
+                <label for="promptInput">📝 Nima chizish kerak? (Istalgan tilda)</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="promptInput" 
+                        placeholder="Masalan: car, uy, mashina, cat, kuchukcha, tog', gul, kosmos..."
+                        autocomplete="off"
+                        autofocus
+                    >
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <button class="generate-btn" id="generateBtn" onclick="generateImage()">
+                <span>🚀</span>
+                <span>Rasm Yaratish</span>
+            </button>
+
+            <!-- Quick Examples -->
+            <div class="quick-examples">
+                <span>💡 Tezkor misollar:</span>
+                <button class="example-btn" onclick="setPrompt('red sports car')">🚗 Car</button>
+                <button class="example-btn" onclick="setPrompt('beautiful house')">🏠 Uy</button>
+                <button class="example-btn" onclick="setPrompt('cute cat')">🐱 Cat</button>
+                <button class="example-btn" onclick="setPrompt('golden retriever dog')">🐕 Kuchukcha</button>
+                <button class="example-btn" onclick="setPrompt('mountain landscape')">🏔️ Tog'</button>
+                <button class="example-btn" onclick="setPrompt('beautiful flower')">🌸 Gul</button>
+                <button class="example-btn" onclick="setPrompt('space galaxy')">🌌 Kosmos</button>
+                <button class="example-btn" onclick="setPrompt('sunset beach')">🏖️ Plyaj</button>
+                <button class="example-btn" onclick="setPrompt('pizza')">🍕 Pizza</button>
+                <button class="example-btn" onclick="setPrompt('iphone')">📱 Telefon</button>
+            </div>
+
+            <!-- Result Area -->
+            <div class="result-area" id="resultArea">
+                <!-- Placeholder -->
+                <div class="placeholder" id="placeholder">
+                    <div class="placeholder-icon">🎨</div>
+                    <h3>Rasm tayyorlash uchun kutmoqda</h3>
+                    <p>Yuqoridagi maydonga nima chizishni xohlasangiz shuni yozing</p>
+                </div>
+
+                <!-- Loading -->
+                <div class="loading" id="loading">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text" id="loadingText">AI rasm yaratmoqda...</div>
+                    <div class="loading-subtext">15-30 soniya kutib turing</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+
+                <!-- Result Image -->
+                <div class="result-container" id="resultContainer">
+                    <img class="result-image" id="resultImage" src="" alt="AI Rasm">
+                    <div class="result-actions">
+                        <button class="action-btn" onclick="downloadImage()">
+                            <span>⬇️</span> Yuklab Olish
+                        </button>
+                        <button class="action-btn" onclick="generateImage()">
+                            <span>🔄</span> Qayta Yaratish
+                        </button>
+                        <button class="action-btn" onclick="copyLink()">
+                            <span>🔗</span> Havolani Nusxalash
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Section -->
+            <div class="history-section">
+                <div class="history-header">
+                    <h3>📜 Yaratilgan Rasmlar</h3>
+                    <button class="clear-btn" onclick="clearHistory()">🗑️ Tozalash</button>
+                </div>
+                <div class="history-grid" id="historyGrid">
+                    <div class="history-empty">
+                        <div style="font-size: 3rem; margin-bottom: 15px;">🖼️</div>
+                        <p>Hozircha rasm yo'q</p>
+                        <p style="font-size: 0.85rem; margin-top: 8px;">Birinchi rasmingizni yarating!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2024 AI Rasm Generator | Pollinations.ai API</p>
+            <p style="margin-top: 8px;">Hech qanday API key talab qilinmaydi! 100% Bepul!</p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // ==================== GLOBAL STATE ====================
+        const STATE = {
+            currentPrompt: '',
+            currentImage: '',
+            isGenerating: false,
+            history: JSON.parse(localStorage.getItem('ai_image_history')) || []
+        };
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            renderHistory();
+            setupEventListeners();
+            console.log('✅ AI Rasm Generator ishga tushdi!');
+        });
+
+        function setupEventListeners() {
+            const input = document.getElementById('promptInput');
+            
+            // Enter key to generate
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !STATE.isGenerating) {
+                    generateImage();
+                }
+            });
+
+            // Input validation
+            input.addEventListener('input', () => {
+                const value = input.value.trim();
+                if (value.length > 100) {
+                    input.value = value.substring(0, 100);
+                }
+            });
+        }
+
+        // ==================== MAIN GENERATION FUNCTION ====================
+        async function generateImage() {
+            const prompt = document.getElementById('promptInput').value.trim();
+
+            // Validation
+            if (!prompt) {
+                showToast('❌ Iltimos, nima chizishni xohlasangiz shuni yozing!', 'error');
+                document.getElementById('promptInput').focus();
+                return;
+            }
+
+            if (prompt.length < 2) {
+                showToast('❌ Kamida 2 ta belgi yozing!', 'error');
+                return;
+            }
+
+            if (STATE.isGenerating) {
+                showToast('⏳ Hozir rasm yaratilmoqda, kuting...', 'warning');
+                return;
+            }
+
+            // Set state
+            STATE.isGenerating = true;
+            STATE.currentPrompt = prompt;
+            
+            // Update UI
+            updateUIForLoading();
+
+            try {
+                // Generate unique seed for variety
+                const seed = Math.floor(Math.random() * 999999) + 1;
+                
+                // Enhanced prompt for better results
+                const enhancedPrompt = enhancePrompt(prompt);
+                
+                // Multiple API endpoints for reliability
+                const imageUrls = [
+                    `https://image.pollinations.ai/prompt/${encodeURIComponent(enhancedPrompt)}?width=1024&height=1024&seed=${seed}&model=flux&nologo=true`,
+                    `https://image.pollinations.ai/prompt/${encodeURIComponent(enhancedPrompt)}?width=1024&height=1024&seed=${seed}&nologo=true`,
+                    `https://pollinations.ai/p/${encodeURIComponent(enhancedPrompt)}?width=1024&height=1024&seed=${seed}`
+                ];
+
+                // Try each URL until one works
+                let successfulUrl = null;
+                
+                for (const url of imageUrls) {
+                    try {
+                        await loadImage(url);
+                        successfulUrl = url;
+                        break;
+                    } catch (e) {
+                        console.log('URL ishlamadi, keyingisini sinaymiz:', url);
+                        continue;
+                    }
+                }
+
+                if (!successfulUrl) {
+                    throw new Error('Hech bir API ishlamadi');
+                }
+
+                // Success!
+                STATE.currentImage = successfulUrl;
+                STATE.isGenerating = false;
+
+                // Show result
+                showResult(successfulUrl);
+                
+                // Add to history
+                addToHistory(successfulUrl, prompt);
+                
+                // Show success message
+                showToast('✅ Rasm muvaffaqiyatli yaratildi!', 'success');
+
+            } catch (error) {
+                console.error('Generation error:', error);
+                STATE.isGenerating = false;
+                
+                // Show error
+                showPlaceholder();
+                document.getElementById('generateBtn').disabled = false;
+                
+                showToast(`❌ Xatolik: ${error.message}`, 'error');
+                
+                // Offer fallback
+                setTimeout(() => {
+                    if (confirm('Rasm yaratishda xatolik bo\'ldi. Demo rasm ko\'rsatilsinmi?')) {
+                        const demoUrl = `https://picsum.photos/seed/${Date.now()}/1024/1024`;
+                        STATE.currentImage = demoUrl;
+                        showResult(demoUrl);
+                        addToHistory(demoUrl, prompt + ' (Demo)');
+                    }
+                }, 1000);
+            }
+        }
+
+        // ==================== PROMPT ENHANCEMENT ====================
+        function enhancePrompt(basePrompt) {
+            // Common translations for better AI understanding
+            const translations = {
+                'mashina': 'car',
+                'uy': 'house',
+                'kuchukcha': 'cute dog',
+                'mushuk': 'cat',
+                'tog': 'mountain',
+                'gul': 'beautiful flower',
+                'kosmos': 'space galaxy',
+                'plyaj': 'beach sunset',
+                'daraxt': 'tree',
+                'osh': 'delicious food',
+                'non': 'bread',
+                'kitob': 'book',
+                'telefon': 'smartphone',
+                'kompyuter': 'computer laptop',
+                'soat': 'watch',
+                'ko\'zoynak': 'glasses',
+                'kalam': 'pencil',
+                'daftar': 'notebook',
+                'sumka': 'bag',
+                'kiyim': 'clothing',
+                'oy': 'moon',
+                'quyosh': 'sun',
+                'yulduz': 'star',
+                'bulut': 'clouds sky',
+                'yomg\'ir': 'rain',
+                'qor': 'snow',
+                'olma': 'apple fruit',
+                'banan': 'banana',
+                'uzum': 'grapes',
+                'lovya': 'coffee',
+                'choy': 'tea',
+                'suv': 'water',
+                'baliq': 'fish',
+                'qush': 'bird',
+                'ot': 'horse',
+                'sigir': 'cow',
+                'qo\'y': 'sheep',
+                'tulki': 'fox',
+                'ayiq': 'bear',
+                'sher': 'lion',
+                'yo\'lbars': 'tiger',
+                'fil': 'elephant',
+                'jirafa': 'giraffe',
+                'zebra': 'zebra'
+            };
+
+            let enhanced = basePrompt.toLowerCase();
+
+            // Apply translations
+            Object.keys(translations).forEach(uzbek => {
+                if (enhanced.includes(uzbek)) {
+                    enhanced = enhanced.replace(uzbek, translations[uzbek]);
+                }
+            });
+
+            // Add quality modifiers
+            const qualityModifiers = [
+                'high quality',
+                'detailed',
+                'professional',
+                '4k'
+            ];
+
+            // Random quality modifier
+            const randomModifier = qualityModifiers[Math.floor(Math.random() * qualityModifiers.length)];
+            enhanced += `, ${randomModifier}`;
+
+            return enhanced;
+        }
+
+        // ==================== IMAGE LOADING ====================
+        function loadImage(url) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                
+                img.onload = () => {
+                    // Check if image has actual content
+                    if (img.naturalWidth > 100 && img.naturalHeight > 100) {
+                        resolve(url);
+                    } else {
+                        reject(new Error('Rasm bo\'sh'));
+                    }
+                };
+                
+                img.onerror = () => {
+                    reject(new Error('Rasm yuklanmadi'));
+                };
+                
+                // Timeout after 60 seconds
+                setTimeout(() => {
+                    reject(new Error('Vaqt tugadi'));
+                }, 60000);
+                
+                img.src = url;
+            });
+        }
+
+        // ==================== UI UPDATES ====================
+        function updateUIForLoading() {
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('generateBtn').disabled = true;
+            document.getElementById('generateBtn').innerHTML = '<span>⏳</span><span>Yaratilmoqda...</span>';
+
+            // Animate loading text
+            const loadingTexts = [
+                'AI o\'ylamoqda...',
+                'Ranglarni aralashtirmoqda...',
+                'Piksellarni joylashtirmoqda...',
+                'Detallarni qo\'shmoqda...',
+                'Deyarli tayyor...',
+                'Oxirgi tegishlar...'
+            ];
+
+            let index = 0;
+            const textElement = document.getElementById('loadingText');
+            
+            STATE.loadingInterval = setInterval(() => {
+                index = (index + 1) % loadingTexts.length;
+                textElement.textContent = loadingTexts[index];
+            }, 3000);
+        }
+
+        function showResult(imageUrl) {
+            clearInterval(STATE.loadingInterval);
+            
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('placeholder').style.display = 'none';
+            
+            const resultContainer = document.getElementById('resultContainer');
+            const resultImage = document.getElementById('resultImage');
+            
+            resultImage.src = imageUrl;
+            resultContainer.style.display = 'block';
+            
+            document.getElementById('generateBtn').disabled = false;
+            document.getElementById('generateBtn').innerHTML = '<span>🚀</span><span>Rasm Yaratish</span>';
+        }
+
+        function showPlaceholder() {
+            clearInterval(STATE.loadingInterval);
+            
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('placeholder').style.display = 'block';
+            
+            document.getElementById('generateBtn').disabled = false;
+            document.getElementById('generateBtn').innerHTML = '<span>🚀</span><span>Rasm Yaratish</span>';
+        }
+
+        // ==================== HISTORY MANAGEMENT ====================
+        function addToHistory(imageUrl, prompt) {
+            const item = {
+                id: Date.now(),
+                url: imageUrl,
+                prompt: prompt,
+                date: new Date().toISOString()
+            };
+
+            // Add to beginning of array
+            STATE.history.unshift(item);
+
+            // Limit to 30 items
+            if (STATE.history.length > 30) {
+                STATE.history = STATE.history.slice(0, 30);
+            }
+
+            // Save to localStorage
+            localStorage.setItem('ai_image_history', JSON.stringify(STATE.history));
+            
+            // Render
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const grid = document.getElementById('historyGrid');
+
+            if (STATE.history.length === 0) {
+                grid.innerHTML = `
+                    <div class="history-empty">
+                        <div style="font-size: 3rem; margin-bottom: 15px;">🖼️</div>
+                        <p>Hozircha rasm yo'q</p>
+                        <p style="font-size: 0.85rem; margin-top: 8px;">Birinchi rasmingizni yarating!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = STATE.history.map(item => `
+                <div class="history-item" onclick="loadFromHistory(${item.id})" title="${item.prompt}">
+                    <img src="${item.url}" alt="${item.prompt}" loading="lazy">
+                    <div class="prompt-overlay">${item.prompt}</div>
+                </div>
+            `).join('');
+        }
+
+        function loadFromHistory(id) {
+            const item = STATE.history.find(h => h.id === id);
+            
+            if (item) {
+                document.getElementById('promptInput').value = item.prompt;
+                STATE.currentImage = item.url;
+                
+                document.getElementById('placeholder').style.display = 'none';
+                document.getElementById('loading').style.display = 'none';
+                
+                const resultContainer = document.getElementById('resultContainer');
+                const resultImage = document.getElementById('resultImage');
+                
+                resultImage.src = item.url;
+                resultContainer.style.display = 'block';
+                
+                showToast('📜 Tarixdan yuklandi', 'success');
+                
+                // Scroll to result
+                document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function clearHistory() {
+            if (STATE.history.length === 0) {
+                showToast('⚠️ Tozalash uchun tarix bo\'sh', 'warning');
+                return;
+            }
+
+            if (confirm('📜 Barcha yaratilgan rasmlar tarixini o\'chirishni xohlaysizmi?')) {
+                STATE.history = [];
+                localStorage.removeItem('ai_image_history');
+                renderHistory();
+                showToast('🗑️ Tarix tozalandi', 'success');
+            }
+        }
+
+        // ==================== ACTION FUNCTIONS ====================
+        function downloadImage() {
+            if (!STATE.currentImage) {
+                showToast('❌ Yuklab olish uchun rasm yo\'q!', 'error');
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.href = STATE.currentImage;
+            link.download = `ai-rasm-${Date.now()}.jpg`;
+            link.crossOrigin = 'anonymous';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showToast('📥 Rasm yuklab olindi!', 'success');
+        }
+
+        function copyLink() {
+            if (!STATE.currentImage) {
+                showToast('❌ Nusxalash uchun rasm yo\'q!', 'error');
+                return;
+            }
+
+            navigator.clipboard.writeText(STATE.currentImage).then(() => {
+                showToast('🔗 Havola buferga nusxalandi!', 'success');
+            }).catch(() => {
+                showToast('❌ Nusxalashda xatolik', 'error');
+            });
+        }
+
+        function setPrompt(text) {
+            document.getElementById('promptInput').value = text;
+            document.getElementById('promptInput').focus();
+            showToast(`📝 "${text}" tanlandi`, 'success');
+        }
+
+        // ==================== TOAST NOTIFICATIONS ====================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️'
+            };
+
+            toast.innerHTML = `
+                <span class="toast-icon">${icons[type]}</span>
+                <span class="toast-message">${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            // Animate in
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            // Auto remove
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+
+        // ==================== KEYBOARD SHORTCUTS ====================
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+Enter to generate
+            if (e.ctrlKey && e.key === 'Enter') {
+                if (!STATE.isGenerating) {
+                    generateImage();
+                }
+            }
+
+            // Escape to cancel
+            if (e.key === 'Escape' && STATE.isGenerating) {
+                showToast('⚠️ Jarayon bekor qilindi', 'warning');
+                STATE.isGenerating = false;
+                clearInterval(STATE.loadingInterval);
+                showPlaceholder();
+                document.getElementById('generateBtn').disabled = false;
+                document.getElementById('generateBtn').innerHTML = '<span>🚀</span><span>Rasm Yaratish</span>';
+            }
+        });
+
+        // ==================== ERROR HANDLING ====================
+        window.addEventListener('error', (e) => {
+            console.error('Global error:', e.error);
+        });
+
+        window.addEventListener('unhandledrejection', (e) => {
+            console.error('Unhandled promise rejection:', e.reason);
+        });
+
+        // ==================== CONSOLE INFO ====================
+        console.log('%c🎨 AI Rasm Generator', 'font-size: 20px; color: #00f5ff; font-weight: bold;');
+        console.log('%c✅ 100% Bepul | API Key Kerak Emas', 'font-size: 14px; color: #00ff88;');
+        console.log('%c📝 Masalan: "car", "uy", "cat", "mashina" deb yozing', 'font-size: 12px; color: #8892b0;');
+    </script>
+</body>
+</html>
